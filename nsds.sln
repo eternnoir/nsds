@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nsds", "nsds\nsds.csproj", "{868AC312-4EA3-4C73-8CC6-B418502FE79D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nsds.Test", "nsds.Test\nsds.Test.csproj", "{4908F415-1992-4E94-82B7-9453F26905BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nsds.RedisDictionaryService", "nsds.RedisDictionaryService\nsds.RedisDictionaryService.csproj", "{298159EB-0FE7-448C-8694-8D545C4D39C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{868AC312-4EA3-4C73-8CC6-B418502FE79D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{868AC312-4EA3-4C73-8CC6-B418502FE79D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{868AC312-4EA3-4C73-8CC6-B418502FE79D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{868AC312-4EA3-4C73-8CC6-B418502FE79D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4908F415-1992-4E94-82B7-9453F26905BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4908F415-1992-4E94-82B7-9453F26905BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4908F415-1992-4E94-82B7-9453F26905BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4908F415-1992-4E94-82B7-9453F26905BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{298159EB-0FE7-448C-8694-8D545C4D39C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{298159EB-0FE7-448C-8694-8D545C4D39C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{298159EB-0FE7-448C-8694-8D545C4D39C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{298159EB-0FE7-448C-8694-8D545C4D39C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
