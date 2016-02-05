@@ -175,10 +175,7 @@ namespace nsds.RedisDictionaryService
             var keys = this.redis.GetServer(this.connectionString).Keys(database: this.databaseNumber);
             foreach (var key in Keys)
             {
-                if (!key.ToString().Contains(this.classTypePrefix))
-                {
-                    keylist.Add((string)key);
-                }
+                keylist.Add((string)key);
             }
             return keylist;
         }
