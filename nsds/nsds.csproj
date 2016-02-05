@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="DictionaryServiceManager.cs" />
     <Compile Include="Exceptions\DictionaryServiceNotFoundException.cs" />
+    <Compile Include="Exceptions\NotSerializableException.cs" />
     <Compile Include="Exceptions\NsdsException.cs" />
     <Compile Include="IDictionaryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
