@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{298159EB-0FE7-448C-8694-8D545C4D39C1}</ProjectGuid>
+    <ProjectGuid>{CB98CD22-E670-48E8-A4EB-00018C960898}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>nsds.RedisDictionaryService</RootNamespace>
-    <AssemblyName>nsds.RedisDictionaryService</AssemblyName>
+    <RootNamespace>nsds.RedisDictionaryService.Test</RootNamespace>
+    <AssemblyName>nsds.RedisDictionaryService.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="StackExchange.Redis, Version=1.0.316.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StackExchange.Redis.1.0.488\lib\net45\StackExchange.Redis.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.0.5813.39031, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.0.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -45,16 +45,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RedisDictionaryService.cs" />
+    <Compile Include="RedisDictionaryServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\nsds.RedisDictionaryService\nsds.RedisDictionaryService.csproj">
+      <Project>{298159eb-0fe7-448c-8694-8d545c4d39c1}</Project>
+      <Name>nsds.RedisDictionaryService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\nsds\nsds.csproj">
       <Project>{868ac312-4ea3-4c73-8cc6-b418502fe79d}</Project>
       <Name>nsds</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

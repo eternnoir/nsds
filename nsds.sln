@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nsds.Test", "nsds.Test\nsds
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nsds.RedisDictionaryService", "nsds.RedisDictionaryService\nsds.RedisDictionaryService.csproj", "{298159EB-0FE7-448C-8694-8D545C4D39C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nsds.RedisDictionaryService.Test", "nsds.RedisDictionaryService.Test\nsds.RedisDictionaryService.Test.csproj", "{CB98CD22-E670-48E8-A4EB-00018C960898}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{298159EB-0FE7-448C-8694-8D545C4D39C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{298159EB-0FE7-448C-8694-8D545C4D39C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{298159EB-0FE7-448C-8694-8D545C4D39C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB98CD22-E670-48E8-A4EB-00018C960898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB98CD22-E670-48E8-A4EB-00018C960898}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB98CD22-E670-48E8-A4EB-00018C960898}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB98CD22-E670-48E8-A4EB-00018C960898}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
