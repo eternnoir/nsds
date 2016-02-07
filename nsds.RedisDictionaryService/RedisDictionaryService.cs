@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace nsds.RedisDictionaryService
 {
-    public class RedisDictionaryService : IDictionaryService
+    public class RedisDictionaryService : IDictionaryService, IDisposable
     {
         private const string dictionaryServiceId = "RedisDictionaryService";
         private string connectionString;
@@ -140,6 +140,11 @@ namespace nsds.RedisDictionaryService
         IEnumerator IEnumerable.GetEnumerator()
         {
             return new RedisDictionaryEnumerator(this);
+        }
+
+        public void Dispose()
+        {
+            this.redis.Close();
         }
 
         private IDatabase GetRedisDb()
