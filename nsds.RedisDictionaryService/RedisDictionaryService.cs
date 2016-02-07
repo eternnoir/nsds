@@ -18,11 +18,13 @@ namespace nsds.RedisDictionaryService
         private ConnectionMultiplexer redis;
         private int databaseNumber;
 
-        public RedisDictionaryService(string connectionString, int databaseNumber = 0)
+        public RedisDictionaryService(string connectionString, int databaseNumber = 0, bool AllowAdmin = false)
         {
             this.connectionString = connectionString;
-            this.redis = ConnectionMultiplexer.Connect(this.connectionString);
             this.databaseNumber = databaseNumber;
+            var options = ConfigurationOptions.Parse(this.connectionString);
+            options.AllowAdmin = AllowAdmin;
+            this.redis = ConnectionMultiplexer.Connect(options);
         }
 
         public object this[string key]
@@ -108,7 +110,7 @@ namespace nsds.RedisDictionaryService
 
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new RedisDictionaryEnumerator(this);
         }
 
         public bool Remove(KeyValuePair<string, object> item)
@@ -137,7 +139,7 @@ namespace nsds.RedisDictionaryService
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new RedisDictionaryEnumerator(this);
         }
 
         private IDatabase GetRedisDb()
@@ -167,8 +169,7 @@ namespace nsds.RedisDictionaryService
         private List<string> GetRedisKeys()
         {
             var keylist = new List<string>();
-            var keys = this.redis.GetServer(this.connectionString).Keys(database: this.databaseNumber);
-            foreach (var key in Keys)
+            foreach (var key in this.redis.GetServer(this.connectionString).Keys(pattern: "*",database: this.databaseNumber))
             {
                 keylist.Add((string)key);
             }
