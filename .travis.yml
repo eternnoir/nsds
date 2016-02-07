@@ -10,4 +10,4 @@ env:
   - REDIS_SERVER=127.0.0.1:6379
 script:
   - xbuild /p:Configuration=Release nsds.sln
-  - mono ./testrunner/NUnit.Runners.3.0.1/tools/nunit-console.exe ./nsds.RedisDictionaryService.Test/bin/release/nsds.RedisDictionaryService.Test.dll
+  - mono ./testrunner/NUnit.Console.3.0.1/tools/nunit3-console.exe ./nsds.RedisDictionaryService.Test/bin/release/nsds.RedisDictionaryService.Test.dll
