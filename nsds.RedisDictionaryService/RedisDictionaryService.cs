@@ -17,14 +17,12 @@ namespace nsds.RedisDictionaryService
         private string connectionString;
         private ConnectionMultiplexer redis;
         private int databaseNumber;
-        private string classTypePrefix;
 
-        public RedisDictionaryService(string connectionString, int databaseNumber = 0, string classTypePrefix = "***[TYPE]***")
+        public RedisDictionaryService(string connectionString, int databaseNumber = 0)
         {
             this.connectionString = connectionString;
             this.redis = ConnectionMultiplexer.Connect(this.connectionString);
             this.databaseNumber = databaseNumber;
-            this.classTypePrefix = classTypePrefix;
         }
 
         public object this[string key]
@@ -155,16 +153,13 @@ namespace nsds.RedisDictionaryService
             }
             var db = this.GetRedisDb();
             byte[] valueBa = db.StringGet(key);
-            string classFullName = db.StringGet(key + this.classTypePrefix);
-            return this.DeserializeObject(classFullName, valueBa);
-
+            return this.DeserializeObject(valueBa);
         }
 
 
         private void SetValue(string key, object value)
         {
             var typeString = value.GetType().FullName;
-            var typekey = key + this.classTypePrefix;
             var db = this.GetRedisDb();
             db.StringSet(key, this.SerializeObject(value));
         }
@@ -190,7 +185,7 @@ namespace nsds.RedisDictionaryService
             }
         }
 
-        private object DeserializeObject(string classFullName, byte[] value)
+        private object DeserializeObject(byte[] value)
         {
             var bf = new BinaryFormatter();
             using (MemoryStream ms = new MemoryStream(value))
