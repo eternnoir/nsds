@@ -55,11 +55,11 @@ namespace nsds.RedisDictionaryService
 
         public bool MoveNext()
         {
-            if (this.flag <= this.keyList.Count)
+            if (this.flag >= this.keyList.Count)
             {
                 return false;
             }
-            else if (this.flag + 1 <= this.keyList.Count)
+            else if (this.flag + 1 >= this.keyList.Count)
             {
                 return false;
             }
