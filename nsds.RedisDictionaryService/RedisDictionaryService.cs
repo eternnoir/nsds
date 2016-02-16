@@ -17,11 +17,17 @@ namespace nsds.RedisDictionaryService
         private string connectionString;
         private ConnectionMultiplexer redis;
         private int databaseNumber;
+        private int timeDataBaseNumber;
 
-        public RedisDictionaryService(string connectionString, int databaseNumber = 0, bool AllowAdmin = false)
+        public RedisDictionaryService(string connectionString, int databaseNumber = 0, int timeDatabaseNumber = 1, bool AllowAdmin = false)
         {
+            if (databaseNumber == timeDatabaseNumber)
+            {
+                throw new NsdsException("Redis Database Number and TimeDatabaseNumber is the same database.", "-99");
+            }
             this.connectionString = connectionString;
             this.databaseNumber = databaseNumber;
+            this.timeDataBaseNumber = timeDatabaseNumber;
             var options = ConfigurationOptions.Parse(this.connectionString);
             options.AllowAdmin = AllowAdmin;
             this.redis = ConnectionMultiplexer.Connect(options);
@@ -44,7 +50,7 @@ namespace nsds.RedisDictionaryService
         {
             get
             {
-                return this.GetRedisKeys().Count;
+                return this.GetRedisKeys(this.databaseNumber).Count;
             }
         }
 
@@ -68,7 +74,7 @@ namespace nsds.RedisDictionaryService
         {
             get
             {
-                return this.GetRedisKeys();
+                return this.GetRedisKeys(this.databaseNumber);
             }
         }
 
@@ -86,10 +92,20 @@ namespace nsds.RedisDictionaryService
             this.SetValue(key, value);
         }
 
+        public void Add(string key, object value, TimeSpan slidingExpiration)
+        {
+            if (!value.GetType().IsSerializable)
+            {
+                throw new NotSerializableException("Value can not Serialize.");
+            }
+            this.SetValue(key, value, slidingExpiration);
+        }
+
         public void Clear()
         {
             var server = redis.GetServer(this.connectionString);
             server.FlushDatabase(this.databaseNumber);
+            server.FlushDatabase(this.timeDataBaseNumber);
         }
 
         public bool Contains(KeyValuePair<string, object> item)
@@ -120,6 +136,11 @@ namespace nsds.RedisDictionaryService
 
         public bool Remove(string key)
         {
+            var tdb = this.GetRedisTimeDb();
+            if (tdb.KeyExists(key))
+            {
+                tdb.KeyDelete(key);
+            }
             return this.GetRedisDb().KeyDelete(key);
         }
 
@@ -152,6 +173,11 @@ namespace nsds.RedisDictionaryService
             return this.redis.GetDatabase(this.databaseNumber);
         }
 
+        private IDatabase GetRedisTimeDb()
+        {
+            return this.redis.GetDatabase(this.timeDataBaseNumber);
+        }
+
         private object GetValue(string key)
         {
             if (!this.ContainsKey(key))
@@ -160,21 +186,61 @@ namespace nsds.RedisDictionaryService
             }
             var db = this.GetRedisDb();
             byte[] valueBa = db.StringGet(key);
+            this.UpdateKeyExpire(key);
             return this.DeserializeObject(valueBa);
         }
 
 
         private void SetValue(string key, object value)
         {
-            var typeString = value.GetType().FullName;
             var db = this.GetRedisDb();
             db.StringSet(key, this.SerializeObject(value));
+            this.UpdateKeyExpire(key);
         }
 
-        private List<string> GetRedisKeys()
+        private void SetExpValue(string key, TimeSpan expireTime)
+        {
+            var db = this.GetRedisTimeDb();
+            db.StringSet(key, expireTime.TotalSeconds);
+        }
+
+        private void SetValue(string key, object value, TimeSpan expireTime)
+        {
+            this.SetValue(key, value);
+            this.SetKeyExpire(key, expireTime);
+            this.UpdateKeyExpire(key);
+        }
+
+        private void SetKeyExpire(string key, TimeSpan expireTime)
+        {
+            this.SetExpValue(key, expireTime);
+        }
+
+        private void UpdateKeyExpire(string key)
+        {
+            var tdb = this.GetRedisTimeDb();
+            if (!tdb.KeyExists(key))
+            {
+                return;
+            }
+            var secs = (double) tdb.StringGet(key);
+            var vdb = this.GetRedisDb();
+
+            if (!vdb.KeyExists(key))
+            {
+                // Time Db has value but value db not. delete time db's key.
+                tdb.KeyDelete(key);
+                return;
+            }
+
+            vdb.KeyExpire(key, TimeSpan.FromSeconds(secs));
+            tdb.KeyExpire(key, TimeSpan.FromSeconds(secs));
+        }
+
+        private List<string> GetRedisKeys(int dbNum)
         {
             var keylist = new List<string>();
-            foreach (var key in this.redis.GetServer(this.connectionString).Keys(pattern: "*",database: this.databaseNumber))
+            foreach (var key in this.redis.GetServer(this.connectionString).Keys(pattern: "*",database: dbNum))
             {
                 keylist.Add((string)key);
             }

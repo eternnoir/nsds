@@ -14,6 +14,7 @@ namespace nsds
         int Count { get; }
         ICollection<string> Keys { get; }
         void Add(string key, object value);
+        void Add(string key, object value, TimeSpan slidingExpiration);
         bool ContainsKey(string key);
         bool Remove(string key);
         bool TryGetValue(string key, out object value);

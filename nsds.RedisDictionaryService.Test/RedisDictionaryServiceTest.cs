@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using nsds.Exceptions;
 
 namespace nsds.RedisDictionaryService.Test
 {
@@ -116,6 +118,83 @@ namespace nsds.RedisDictionaryService.Test
             Assert.AreEqual(ds.Keys.Count, numOfObj);
         }
 
+        [Test]
+        public void TestExpireTime()
+        {
+            var to1 = CreateTestObject("001", DateTime.Now, 10, false);
+            var to2 = CreateTestObject("002", DateTime.Now.AddDays(1), 12, true);
+            var ds = new RedisDictionaryService(this.connStr);
+            ds.Add("TO1", to1, TimeSpan.FromSeconds(3));
+            ds.Add("TO2", to2);
+            Thread.Sleep(5 * 1000);
+            Assert.AreEqual(1, ds.Keys.Count);
+            var retObject2 = (TestClass)ds["TO2"];
+            Assert.AreEqual(retObject2.Id, to2.Id);
+        }
+
+        [Test]
+        public void TestExpireTime2()
+        {
+            var to1 = CreateTestObject("001", DateTime.Now, 10, false);
+            var to2 = CreateTestObject("002", DateTime.Now.AddDays(1), 12, true);
+            var ds = new RedisDictionaryService(this.connStr);
+            ds.Add("TO1", to1, TimeSpan.FromSeconds(5));
+            ds.Add("TO2", to2);
+            Thread.Sleep(7 * 1000);
+            Assert.AreEqual(1, ds.Keys.Count);
+            ds.Add("TO1", to1, TimeSpan.FromSeconds(1));
+            Thread.Sleep(2 * 1000);
+            Assert.AreEqual(1, ds.Keys.Count);
+            var retObject2 = (TestClass)ds["TO2"];
+            Assert.AreEqual(retObject2.Id, to2.Id);
+        }
+
+        [Test]
+        public void TestRandomAccessWithExpire()
+        {
+            var ds = new RedisDictionaryService(this.connStr);
+            var numOfObj = 20000;
+            Random rnd = new Random();
+            for (int i = 0; i < numOfObj; i++)
+            {
+                var key = "key" + i;
+                var obj = new TestClass { Id = key, TDate = DateTime.Now, Tbool = false, Tint = i };
+                ds.Add(key, obj, TimeSpan.FromSeconds(rnd.Next(1,5)));
+            }
+
+            for (int i = 0; i < numOfObj; i++)
+            {
+                try
+                {
+                    var obj = ds["key" + rnd.Next(0, numOfObj)];
+                }
+                catch (Exception)
+                {
+                    
+                }
+            }
+
+        }
+
+        [Test]
+        public void TestDbNumber()
+        {
+            try
+            {
+                var ds = new RedisDictionaryService(this.connStr, databaseNumber: 0, timeDatabaseNumber: 0);
+                Assert.True(false);
+            }
+            catch (NsdsException)
+            {
+                
+                Assert.True(true);
+            }
+            catch (Exception)
+            {
+                Assert.True(false);
+            }
+        }
+        
         [TearDown]
         public void ClearDb()
         {
