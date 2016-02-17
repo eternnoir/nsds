@@ -5,7 +5,7 @@ using System.Text;
 
 namespace nsds.SqlServerDictionaryService
 {
-    class SqlServerDictionaryService
+    public class SqlServerDictionaryService
     {
     }
 }
