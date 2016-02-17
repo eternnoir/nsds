@@ -4,10 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace nsds.RedisDictionaryService
 {
@@ -19,7 +16,8 @@ namespace nsds.RedisDictionaryService
         private int databaseNumber;
         private int timeDataBaseNumber;
 
-        public RedisDictionaryService(string connectionString, int databaseNumber = 0, int timeDatabaseNumber = 1, bool AllowAdmin = false)
+        public RedisDictionaryService(string connectionString, int databaseNumber = 0, int timeDatabaseNumber = 1,
+            bool AllowAdmin = false)
         {
             if (databaseNumber == timeDatabaseNumber)
             {
@@ -35,47 +33,29 @@ namespace nsds.RedisDictionaryService
 
         public object this[string key]
         {
-            get
-            {
-                return this.GetValue(key);
-            }
+            get { return this.GetValue(key); }
 
-            set
-            {
-                this.SetValue(key, value);
-            }
+            set { this.SetValue(key, value); }
         }
 
         public int Count
         {
-            get
-            {
-                return this.GetRedisKeys(this.databaseNumber).Count;
-            }
+            get { return this.GetRedisKeys(this.databaseNumber).Count; }
         }
 
         public string DictionaryServiceId
         {
-            get
-            {
-                return this.dictionaryServiceId;
-            }
+            get { return this.dictionaryServiceId; }
         }
 
         public bool IsReadOnly
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         public ICollection<string> Keys
         {
-            get
-            {
-                return this.GetRedisKeys(this.databaseNumber);
-            }
+            get { return this.GetRedisKeys(this.databaseNumber); }
         }
 
         public void Add(KeyValuePair<string, object> item)
@@ -240,9 +220,9 @@ namespace nsds.RedisDictionaryService
         private List<string> GetRedisKeys(int dbNum)
         {
             var keylist = new List<string>();
-            foreach (var key in this.redis.GetServer(this.connectionString).Keys(pattern: "*",database: dbNum))
+            foreach (var key in this.redis.GetServer(this.connectionString).Keys(pattern: "*", database: dbNum))
             {
-                keylist.Add((string)key);
+                keylist.Add((string) key);
             }
             return keylist;
         }
