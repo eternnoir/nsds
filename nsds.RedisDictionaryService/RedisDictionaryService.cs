@@ -13,7 +13,7 @@ namespace nsds.RedisDictionaryService
 {
     public class RedisDictionaryService : IDictionaryService, IDisposable
     {
-        private const string dictionaryServiceId = "RedisDictionaryService";
+        private string dictionaryServiceId = "RedisDictionaryService";
         private string connectionString;
         private ConnectionMultiplexer redis;
         private int databaseNumber;
@@ -58,7 +58,7 @@ namespace nsds.RedisDictionaryService
         {
             get
             {
-                return this.DictionaryServiceId;
+                return this.dictionaryServiceId;
             }
         }
 
