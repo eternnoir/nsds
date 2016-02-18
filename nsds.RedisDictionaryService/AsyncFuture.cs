@@ -9,11 +9,11 @@
 
     public class AsyncFuture<T> : IAsyncFuture
     {
-        public delegate T AsyncTask();
+        public Exception Exception;
+
+        public volatile bool Done;
 
         private readonly ManualResetEvent Event = new ManualResetEvent(false);
-
-        public Exception Exception;
 
         private AsyncTask task;
 
@@ -23,6 +23,8 @@
         {
             this.task = task;
         }
+
+        public delegate T AsyncTask();
 
         public static AsyncFuture<T> Execute(AsyncTask task)
         {
@@ -57,7 +59,8 @@
             {
                 this.Exception = ex;
             }
-
+            
+            this.Done = true;
             this.Event.Set();
         }
     }

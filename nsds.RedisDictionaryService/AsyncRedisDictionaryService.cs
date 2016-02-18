@@ -40,19 +40,6 @@
             }
         }
 
-        public AsyncFuture<object> this[string key]
-        {
-            get
-            {
-                return DoAsync(() => this.redisDictionaryService[key]);
-            }
-
-            set
-            {
-                DoAsync(() => this.redisDictionaryService[key] = value);
-            }
-        }
-
         public AsyncFuture<Void> Add(string key, object value, TimeSpan slidingExpiration)
         {
             return DoAsync(
