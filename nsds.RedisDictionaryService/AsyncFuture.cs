@@ -9,21 +9,25 @@
 
     public class AsyncFuture<T> : IAsyncFuture
     {
-        public Exception Exception;
+        public delegate T AsyncTask();
 
         private readonly ManualResetEvent Event = new ManualResetEvent(false);
+
+        public Exception Exception;
 
         private AsyncTask task;
 
         private T result;
 
-        public AsyncFuture(AsyncTask task)
+        private AsyncFuture(AsyncTask task)
         {
             this.task = task;
-            this.Run();
         }
 
-        public delegate T AsyncTask();
+        public static AsyncFuture<T> Execute(AsyncTask task)
+        {
+            return new AsyncFuture<T>(task).Run();
+        }
 
         public T Get()
         {
@@ -36,9 +40,10 @@
             return this.result;
         }
 
-        private void Run()
+        private AsyncFuture<T> Run()
         {
             ThreadPool.QueueUserWorkItem(state => this.InnerRun());
+            return this;
         }
 
         private void InnerRun()

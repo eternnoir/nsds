@@ -51,6 +51,7 @@
     <Compile Include="RedisDictionaryEnumerator.cs" />
     <Compile Include="RedisDictionaryService.cs" />
     <Compile Include="AsyncRedisDictionaryService.cs" />
+    <Compile Include="Void.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

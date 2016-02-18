@@ -7,9 +7,6 @@
 
     #endregion
 
-    /// <summary>
-    /// [TODO] EXCEPTION
-    /// </summary>
     public class AsyncRedisDictionaryService
     {
         private readonly RedisDictionaryService redisDictionaryService;
@@ -31,7 +28,7 @@
         {
             get
             {
-                return new AsyncFuture<int>(() => this.redisDictionaryService.Count);
+                return DoAsync(() => this.redisDictionaryService.Count);
             }
         }
 
@@ -39,147 +36,117 @@
         {
             get
             {
-                return new AsyncFuture<ICollection<string>>(() => this.redisDictionaryService.Keys);
+                return DoAsync(() => this.redisDictionaryService.Keys);
             }
         }
 
-        public AsyncFuture<bool> Add(string key, object value, TimeSpan slidingExpiration)
+        public AsyncFuture<object> this[string key]
         {
-            return new AsyncFuture<bool>(
+            get
+            {
+                return DoAsync(() => this.redisDictionaryService[key]);
+            }
+
+            set
+            {
+                DoAsync(() => this.redisDictionaryService[key] = value);
+            }
+        }
+
+        public AsyncFuture<Void> Add(string key, object value, TimeSpan slidingExpiration)
+        {
+            return DoAsync(
                 () =>
                     {
-                        try
-                        {
-                            this.redisDictionaryService.Add(key, value, slidingExpiration);
-                        }
-                        catch (Exception)
-                        {
-                            return false;
-                        }
-
-                        return true;
+                        this.redisDictionaryService.Add(key, value, slidingExpiration);
+                        return Void.Const;
                     });
         }
 
-        public AsyncFuture<bool> Add(KeyValuePair<string, object> item)
+        public AsyncFuture<Void> Add(KeyValuePair<string, object> item)
         {
-            return new AsyncFuture<bool>(
+            return DoAsync(
                 () =>
                     {
-                        try
-                        {
-                            this.redisDictionaryService.Add(item);
-                        }
-                        catch (Exception)
-                        {
-                            return false;
-                        }
-
-                        return true;
+                        this.redisDictionaryService.Add(item);
+                        return Void.Const;
                     });
         }
 
-        public AsyncFuture<bool> Add(string key, object value)
+        public AsyncFuture<Void> Add(string key, object value)
         {
-            return new AsyncFuture<bool>(
+            return DoAsync(
                 () =>
                     {
-                        try
-                        {
-                            this.redisDictionaryService.Add(key, value);
-                        }
-                        catch (Exception)
-                        {
-                            return false;
-                        }
-
-                        return true;
+                        this.redisDictionaryService.Add(key, value);
+                        return Void.Const;
                     });
         }
 
-        public AsyncFuture<bool> Clear()
+        public AsyncFuture<Void> Clear()
         {
-            return new AsyncFuture<bool>(
+            return DoAsync(
                 () =>
                     {
-                        try
-                        {
-                            this.redisDictionaryService.Clear();
-                        }
-                        catch (Exception)
-                        {
-                            return false;
-                        }
-
-                        return true;
+                        this.redisDictionaryService.Clear();
+                        return Void.Const;
                     });
         }
 
         public AsyncFuture<bool> Contains(KeyValuePair<string, object> item)
         {
-            return new AsyncFuture<bool>(() => this.redisDictionaryService.Contains(item));
+            return DoAsync(() => this.redisDictionaryService.Contains(item));
         }
 
         public AsyncFuture<bool> ContainsKey(string key)
         {
-            return new AsyncFuture<bool>(() => this.redisDictionaryService.ContainsKey(key));
+            return DoAsync(() => this.redisDictionaryService.ContainsKey(key));
         }
 
-        public AsyncFuture<bool> CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+        public AsyncFuture<Void> CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
-            return new AsyncFuture<bool>(
+            return DoAsync(
                 () =>
                     {
-                        try
-                        {
-                            this.redisDictionaryService.CopyTo(array, arrayIndex);
-                        }
-                        catch (Exception)
-                        {
-                            return false;
-                        }
-
-                        return true;
+                        this.redisDictionaryService.CopyTo(array, arrayIndex);
+                        return Void.Const;
                     });
         }
 
-        public AsyncFuture<bool> Dispose()
+        public AsyncFuture<Void> Dispose()
         {
-            return new AsyncFuture<bool>(
+            return DoAsync(
                 () =>
                     {
-                        try
-                        {
-                            this.redisDictionaryService.Dispose();
-                        }
-                        catch (Exception)
-                        {
-                            return false;
-                        }
-
-                        return true;
+                        this.redisDictionaryService.Dispose();
+                        return Void.Const;
                     });
         }
 
         public AsyncFuture<bool> Remove(KeyValuePair<string, object> item)
         {
-            return new AsyncFuture<bool>(() => this.redisDictionaryService.Remove(item));
+            return DoAsync(() => this.redisDictionaryService.Remove(item));
         }
 
         public AsyncFuture<bool> Remove(string key)
         {
-            return new AsyncFuture<bool>(() => this.redisDictionaryService.Remove(key));
+            return DoAsync(() => this.redisDictionaryService.Remove(key));
         }
 
         public AsyncFuture<object> Get(string key)
         {
-            return new AsyncFuture<object>(
+            return DoAsync(
                 () =>
                     {
                         object val;
                         this.redisDictionaryService.TryGetValue(key, out val);
                         return val;
                     });
+        }
+
+        private static AsyncFuture<R> DoAsync<R>(AsyncFuture<R>.AsyncTask task)
+        {
+            return AsyncFuture<R>.Execute(task);
         }
     }
 }
