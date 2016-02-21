@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using nsds.Exceptions;
 
 namespace nsds.RedisDictionaryService.Test
 {
-
     [TestFixture]
     public class RedisDictionaryServiceTest
     {
@@ -26,6 +26,15 @@ namespace nsds.RedisDictionaryService.Test
         }
 
         [Test]
+        public async Task TestAddAsync()
+        {
+            var ds = new RedisDictionaryService(this.connStr);
+            var t = ds.AddAsync("TestKey", "Hello");
+            await t;
+            Assert.AreEqual(1, ds.Count);
+        }
+
+        [Test]
         public void TestRemoveKey()
         {
             var ds = new RedisDictionaryService(this.connStr);
@@ -39,7 +48,6 @@ namespace nsds.RedisDictionaryService.Test
             }
             catch (KeyNotFoundException knfe)
             {
-
             }
             catch (Exception ex)
             {
@@ -47,12 +55,45 @@ namespace nsds.RedisDictionaryService.Test
             }
         }
 
+
+        [Test]
+        public async Task TestRemoveKeyAsync()
+        {
+            var ds = new RedisDictionaryService(this.connStr);
+            var removedKey = "TestRemoveKey";
+            ds[removedKey] = "Will be removed";
+            try
+            {
+                var task = ds.RemoveAsync(removedKey);
+                await task;
+                var t = ds[removedKey];
+                Assert.Fail("Key must not found.");
+            }
+            catch (KeyNotFoundException knfe)
+            {
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Must throw KeyNotFoundException.");
+            }
+        }
+
+
         [Test]
         public void TestSetGetString()
         {
             var ds = new RedisDictionaryService(this.connStr);
             ds["TestStringKey"] = "Hello";
-            var value = (string)ds["TestStringKey"];
+            var value = (string) ds["TestStringKey"];
+            Assert.AreEqual(value, "Hello");
+        }
+
+        [Test]
+        public async Task TestSetGetStringAsync()
+        {
+            var ds = new RedisDictionaryService(this.connStr);
+            await ds.AddAsync("TestStringKey", "Hello");
+            var value = await ds.GetAsync("TestStringKey");
             Assert.AreEqual(value, "Hello");
         }
 
@@ -64,8 +105,8 @@ namespace nsds.RedisDictionaryService.Test
             var ds = new RedisDictionaryService(this.connStr);
             ds["TO1"] = to1;
             ds["TO2"] = to2;
-            var retObject1 = (TestClass)ds["TO1"];
-            var retObject2 = (TestClass)ds["TO2"];
+            var retObject1 = (TestClass) ds["TO1"];
+            var retObject2 = (TestClass) ds["TO2"];
             Assert.AreEqual(to1.Id, retObject1.Id);
             Assert.AreEqual(to1.TDate, retObject1.TDate);
             Assert.AreEqual(to1.Tint, retObject1.Tint);
@@ -84,7 +125,7 @@ namespace nsds.RedisDictionaryService.Test
             var ds = new RedisDictionaryService(this.connStr);
             ds["TO1"] = to1;
             ds["TO2"] = to2;
-            foreach(var kp in ds)
+            foreach (var kp in ds)
             {
                 Assert.Pass(kp.ToString());
             }
@@ -99,7 +140,6 @@ namespace nsds.RedisDictionaryService.Test
             ds["TO1"] = to1;
             ds["TO2"] = to2;
             Assert.AreEqual(ds.Keys.Count, 2);
- 
         }
 
         [Test]
@@ -107,10 +147,10 @@ namespace nsds.RedisDictionaryService.Test
         {
             var ds = new RedisDictionaryService(this.connStr);
             var numOfObj = 20000;
-            for(int i = 0; i< numOfObj; i++)
+            for (int i = 0; i < numOfObj; i++)
             {
                 var key = "key" + i;
-                ds[key] = new TestClass { Id = key, TDate = DateTime.Now, Tbool = false, Tint = i };
+                ds[key] = new TestClass {Id = key, TDate = DateTime.Now, Tbool = false, Tint = i};
             }
             Assert.AreEqual(ds.Keys.Count, numOfObj);
         }
@@ -123,9 +163,9 @@ namespace nsds.RedisDictionaryService.Test
             var ds = new RedisDictionaryService(this.connStr);
             ds.Add("TO1", to1, TimeSpan.FromSeconds(3));
             ds.Add("TO2", to2);
-            Thread.Sleep(5 * 1000);
+            Thread.Sleep(5*1000);
             Assert.AreEqual(1, ds.Keys.Count);
-            var retObject2 = (TestClass)ds["TO2"];
+            var retObject2 = (TestClass) ds["TO2"];
             Assert.AreEqual(retObject2.Id, to2.Id);
         }
 
@@ -137,12 +177,12 @@ namespace nsds.RedisDictionaryService.Test
             var ds = new RedisDictionaryService(this.connStr);
             ds.Add("TO1", to1, TimeSpan.FromSeconds(5));
             ds.Add("TO2", to2);
-            Thread.Sleep(7 * 1000);
+            Thread.Sleep(7*1000);
             Assert.AreEqual(1, ds.Keys.Count);
             ds.Add("TO1", to1, TimeSpan.FromSeconds(1));
-            Thread.Sleep(2 * 1000);
+            Thread.Sleep(2*1000);
             Assert.AreEqual(1, ds.Keys.Count);
-            var retObject2 = (TestClass)ds["TO2"];
+            var retObject2 = (TestClass) ds["TO2"];
             Assert.AreEqual(retObject2.Id, to2.Id);
         }
 
@@ -155,8 +195,8 @@ namespace nsds.RedisDictionaryService.Test
             for (int i = 0; i < numOfObj; i++)
             {
                 var key = "key" + i;
-                var obj = new TestClass { Id = key, TDate = DateTime.Now, Tbool = false, Tint = i };
-                ds.Add(key, obj, TimeSpan.FromSeconds(rnd.Next(1,5)));
+                var obj = new TestClass {Id = key, TDate = DateTime.Now, Tbool = false, Tint = i};
+                ds.Add(key, obj, TimeSpan.FromSeconds(rnd.Next(1, 5)));
             }
 
             for (int i = 0; i < numOfObj; i++)
@@ -167,10 +207,8 @@ namespace nsds.RedisDictionaryService.Test
                 }
                 catch (Exception)
                 {
-                    
                 }
             }
-
         }
 
         [Test]
@@ -183,7 +221,6 @@ namespace nsds.RedisDictionaryService.Test
             }
             catch (NsdsException)
             {
-                
                 Assert.True(true);
             }
             catch (Exception)
@@ -191,7 +228,20 @@ namespace nsds.RedisDictionaryService.Test
                 Assert.True(false);
             }
         }
-        
+
+        [Test]
+        public async Task TestClearDbAsync()
+        {
+            
+            var ds = new RedisDictionaryService(this.connStr, AllowAdmin: true);
+            var to1 = CreateTestObject("001", DateTime.Now, 10, false);
+            var to2 = CreateTestObject("002", DateTime.Now.AddDays(1), 12, true);
+            ds["TO1"] = to1;
+            ds["TO2"] = to2;
+            await ds.ClearAsync();
+            Assert.AreEqual(0, ds.Count);
+        }
+
         [TearDown]
         public void ClearDb()
         {
@@ -201,7 +251,7 @@ namespace nsds.RedisDictionaryService.Test
 
         private TestClass CreateTestObject(string id, DateTime td, int tint, bool tbool)
         {
-            return new TestClass { Id = id, TDate = td, Tint = tint, Tbool = tbool };
+            return new TestClass {Id = id, TDate = td, Tint = tint, Tbool = tbool};
         }
     }
 }

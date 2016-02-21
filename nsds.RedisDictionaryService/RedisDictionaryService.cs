@@ -119,6 +119,7 @@ namespace nsds.RedisDictionaryService
             server.FlushDatabase(this.databaseNumber);
             server.FlushDatabase(this.timeDataBaseNumber);
         }
+
         public async Task ClearAsync()
         {
             var server = redis.GetServer(this.connectionString);
@@ -176,7 +177,8 @@ namespace nsds.RedisDictionaryService
             {
                 await tdb.KeyDeleteAsync(key);
             }
-            return await this.GetRedisDb().KeyDeleteAsync(key); ;
+            return await this.GetRedisDb().KeyDeleteAsync(key);
+            ;
         }
 
         public bool TryGetValue(string key, out object value)
@@ -214,7 +216,7 @@ namespace nsds.RedisDictionaryService
 
         private IDatabase GetRedisTimeDb()
         {
-            if (this.redisTimeDb== null)
+            if (this.redisTimeDb == null)
             {
                 this.redisTimeDb = this.redis.GetDatabase(this.timeDataBaseNumber);
             }
@@ -250,7 +252,7 @@ namespace nsds.RedisDictionaryService
             var db = this.GetRedisDb();
             if (!db.StringSet(key, this.SerializeObject(value)))
             {
-                throw new NsdsException("Redis DS Set vaule fail","-1");
+                throw new NsdsException("Redis DS Set vaule fail", "-1");
             }
             this.UpdateKeyExpire(key);
         }
@@ -258,9 +260,9 @@ namespace nsds.RedisDictionaryService
         private async Task SetValueAsync(string key, object value)
         {
             var db = this.GetRedisDb();
-            if (! await db.StringSetAsync(key, this.SerializeObject(value)))
+            if (!await db.StringSetAsync(key, this.SerializeObject(value)))
             {
-                throw new NsdsException("Redis DS Set vaule fail","-1");
+                throw new NsdsException("Redis DS Set vaule fail", "-1");
             }
             await this.UpdateKeyExpireAsync(key);
         }
@@ -285,7 +287,7 @@ namespace nsds.RedisDictionaryService
             var db = this.GetRedisTimeDb();
             if (!db.StringSet(key, expireTime.TotalSeconds))
             {
-                throw new NsdsException("Redis DS Set vaule fail","-1");
+                throw new NsdsException("Redis DS Set vaule fail", "-1");
             }
         }
 
@@ -294,7 +296,7 @@ namespace nsds.RedisDictionaryService
             var db = this.GetRedisTimeDb();
             if (!await db.StringSetAsync(key, expireTime.TotalSeconds))
             {
-                throw new NsdsException("Redis DS Set vaule fail","-1");
+                throw new NsdsException("Redis DS Set vaule fail", "-1");
             }
         }
 
@@ -322,7 +324,7 @@ namespace nsds.RedisDictionaryService
         private async Task UpdateKeyExpireAsync(string key)
         {
             var tdb = this.GetRedisTimeDb();
-            if (! await tdb.KeyExistsAsync(key))
+            if (!await tdb.KeyExistsAsync(key))
             {
                 return;
             }
@@ -368,14 +370,5 @@ namespace nsds.RedisDictionaryService
                 return bf.Deserialize(ms);
             }
         }
-
-
-
-
-
-
-
-
-
     }
 }
