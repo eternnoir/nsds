@@ -46,6 +46,7 @@
     <Compile Include="Exceptions\NotSerializableException.cs" />
     <Compile Include="Exceptions\NsdsException.cs" />
     <Compile Include="IDictionaryService.cs" />
+    <Compile Include="IDictionaryServiceAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

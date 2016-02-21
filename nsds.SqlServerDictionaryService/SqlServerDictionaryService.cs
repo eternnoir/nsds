@@ -72,6 +72,11 @@ namespace nsds.SqlServerDictionaryService
             throw new NotImplementedException();
         }
 
+        public object Get(string key)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool ContainsKey(string key)
         {
             throw new NotImplementedException();
