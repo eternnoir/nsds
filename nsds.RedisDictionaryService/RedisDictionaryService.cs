@@ -81,6 +81,11 @@ namespace nsds.RedisDictionaryService
             this.SetValue(key, value, slidingExpiration);
         }
 
+        public object Get(string key)
+        {
+            return this.GetValue(key);
+        }
+
         public void Clear()
         {
             var server = redis.GetServer(this.connectionString);

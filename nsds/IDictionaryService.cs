@@ -12,6 +12,7 @@ namespace nsds
         ICollection<string> Keys { get; }
         void Add(string key, object value);
         void Add(string key, object value, TimeSpan slidingExpiration);
+        object Get(string key);
         bool ContainsKey(string key);
         bool Remove(string key);
         bool TryGetValue(string key, out object value);
