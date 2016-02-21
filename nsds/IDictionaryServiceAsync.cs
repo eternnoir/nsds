@@ -6,14 +6,11 @@ namespace nsds
 {
     public interface IDictionaryServiceAsync
     {
-        Task<object> this[string key] { get; set; }
-        Task<int> Count { get; }
-        Task<ICollection<string>> Keys { get; }
-        Task Add(string key, object value);
-        Task Add(string key, object value, TimeSpan slidingExpiration);
-        Task<bool> ContainsKey(string key);
-        Task<bool> Remove(string key);
-        Task<object> Get(string key);
-        Task<bool> TryGetValue(string key, out object value);
+        Task AddAsync(string key, object value);
+        Task AddAsync(string key, object value, TimeSpan slidingExpiration);
+        Task<bool> ContainsKeyAsync(string key);
+        Task<bool> RemoveAsync(string key);
+        Task<object> GetAsync(string key);
+        Task ClearAsync();
     }
 }

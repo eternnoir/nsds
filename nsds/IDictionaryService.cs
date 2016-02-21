@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace nsds
 {
-    public interface IDictionaryService: ICollection<KeyValuePair<string, object>>, IEnumerable<KeyValuePair<string, object>>, IEnumerable
+    public interface IDictionaryService : IDictionaryServiceAsync, ICollection<KeyValuePair<string, object>>, IEnumerable<KeyValuePair<string, object>>, IEnumerable
     {
         string DictionaryServiceId { get; }
         object this[string key] { get; set; }

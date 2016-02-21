@@ -5,6 +5,7 @@ using System.ComponentModel.Design;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace nsds.SqlServerDictionaryService
 {
@@ -113,6 +114,41 @@ namespace nsds.SqlServerDictionaryService
             {
                 this.dbc.Close();
             }
+        }
+
+        public Task AddAsync(string key, object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddAsync(string key, object value, TimeSpan slidingExpiration)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ContainsKeyAsync(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> RemoveAsync(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<object> GetAsync(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ClearAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> TryGetValueAsync(string key, out object value)
+        {
+            throw new NotImplementedException();
         }
     }
 }
